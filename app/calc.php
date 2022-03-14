@@ -1,31 +1,54 @@
 <?php
 require_once dirname(__FILE__).'/../config.php';
-$x = $_REQUEST ['x'];
-$y = $_REQUEST ['y'];
-if ( ! (isset($x) && isset($y))) {
-	$messages [] = 'Błędne wywołanie aplikacji. Brak jednego z parametrów.';
+
+include _ROOT_PATH.'/app/security/check.php';
+
+function getParams(&$cost, &$year, &$percent){
+	$cost = isset($_REQUEST['cost']) ? $_REQUEST['cost'] : null;
+	$year = isset($_REQUEST['year']) ? $_REQUEST['year'] : null;
+	$percent = isset($_REQUEST['percent']) ? $_REQUEST['percent'] : null;
 }
 
-if ( $x == "") {
-	$messages [] = 'Nie podano liczby kwoty do pożyczenia';
-}
-if ( $y == "") {
-	$messages [] = 'Nie podano liczby rat';
-}
-if (empty( $messages )) {
-	if (! is_numeric( $x )) {
-		$messages [] = 'Proszę wprowadzić liczbę całkowitą w polu kwoty pożyszki';
+function validate(&$cost, &$year, &$percent, &$messages){
+	if( ! (isset($cost) && isset($year) && isset($percent) && isset($messages))) {
+		return false;
 	}
 
-	if (! is_numeric( $y )) {
-		$messages [] = 'Proszę wprowadzić liczbę całkowitą w polu ilości rat';
+	if($cost == "") $messages[] = 'Nie podano kosztu.';
+	if($year == "") $messages[] = 'Nie podano lat.';
+	if($percent == "") $messages[] = 'Nie podano oprocentowania.';
+
+	if(count ($messages) != 0) return false;
+
+	if(! is_numeric($cost)) $messages [] = 'Koszt nie jest liczbą całkowitą.';
+	if(! is_numeric($year)) $messages [] = 'Lata nie są liczbą całkowitą.';
+	if(! is_numeric($percent)) $messages [] = 'Oprocentowanie nie jest liczbą całkowitą.';
+
+	if(count ($messages) != 0) return false;
+	else return true;
+}
+
+function process(&$cost, &$year, &$percent, &$messages, &$result){
+	global $role;
+
+	$cost = intval($cost);
+	$year = intval($year);
+	$percent = intval($percent);
+
+	if ($role == 'admin') $result = ($cost+($cost*$percent/100))/($year*12);
+	else {
+		$messages [] = 'Tylko administrator umie liczyć!';
+		$messages [] = 'Idź poskarż się Mamie!';
 	}
 }
 
-if (empty ( $messages )) {
-	$x = intval($x);
-	$y = intval($y);
+$cost = null;
+$year = null;
+$percent = null;
+$result = null;
+$messages = array();
 
-	$results = ($x/$y)+($x/$y)*0.02;
-}
+getParams($cost, $year, $percent);
+if( validate($cost, $year, $percent, $messages)) process($cost, $year, $percent, $messages, $result);
+
 include 'calc_view.php';

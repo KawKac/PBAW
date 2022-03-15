@@ -37,8 +37,7 @@ function process(&$cost, &$year, &$percent, &$messages, &$result){
 
 	if ($role == 'admin') $result = ($cost+($cost*$percent/100))/($year*12);
 	else {
-		$messages [] = 'Tylko administrator umie liczyć!';
-		$messages [] = 'Idź poskarż się Mamie!';
+		$messages [] = 'Brak uprawnień';
 	}
 }
 

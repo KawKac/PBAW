@@ -12,7 +12,6 @@ function validateLogin(&$form, &$messages){
     if($form['login'] == "") $messages [] = 'Nie podano loginu.';
     if($form['password'] == "") {
         $messages [] = 'Złe hasło.';
-        $messages [] = 'Podaj co najmniej jedną literę.';
     }
 
     if(count($messages) > 0) return false;
@@ -36,6 +35,6 @@ $form = array();
 $messages = array();
 
 getParamsLogin($form);
-
+exit();
 if (!validateLogin($form,$messages)) include _ROOT_PATH.'/app/security/login_view.php';
 else header("Location: "._APP_URL);

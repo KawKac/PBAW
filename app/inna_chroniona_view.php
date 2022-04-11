@@ -19,8 +19,8 @@ include _ROOT_PATH.'/app/security/check.php';
 
 <div style="width:90%; margin: 2em auto;">
 	<p>Hej, Trwają prace techniczne.</p>
-	<p>Przepraszam, Patryk Szymczyk.</p>
-</div>	
+	<p>Przepraszam.</p>
+</div>
 
 </body>
 </html>
